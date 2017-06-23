@@ -1,0 +1,60 @@
+<h1>Angular 2 CRUD Operation</h1>
+
+
+<h3 *ngIf="mercaderiaIdToUpdate; else create"> 
+   Update Article for Id: {{mercaderiaIdToUpdate}}
+</h3>
+
+<ng-template #create>
+   <h3> Create New Article </h3>
+</ng-template>
+
+<div>
+
+ <form [formGroup]="mercaderiaForm" (ngSubmit)="onMercaderiaFormSubmit()">
+  <table>
+    <tr><td>Enter Title</td><td><input formControlName="nombre">
+	       <label *ngIf="mercaderiaForm.get('nombre').invalid && processValidation" [ngClass] = "'error'"> Title is required. </label>
+   	</td></tr>
+    <tr><td>Enter Category</td><td><input formControlName="category">
+	       <label *ngIf="mercaderiaForm.get('categoria').invalid && processValidation" [ngClass] = "'error'"> Category is required. </label>
+	</td></tr>	
+    <tr><td colspan="2">
+	    <button *ngIf="!mercaderiaIdToUpdate">CREATE</button>  
+		<button *ngIf="mercaderiaIdToUpdate">UPDATE</button>  
+	    <button (click)="backToCreateMercaderia()" *ngIf="mercaderiaIdToUpdate">Go Back</button>  
+	</td></tr>
+  </table>
+ </form> 
+
+
+ <br/>
+ <div *ngIf="statusCode; else processing">
+   <div *ngIf="statusCode === 201" [ngClass] = "'success'">
+	    Article added successfully.
+   </div>   
+   <div *ngIf="statusCode === 409" [ngClass] = "'success'">
+        Article already exists.
+   </div>   	
+   <div *ngIf="statusCode === 200" [ngClass] = "'success'">
+        Article updated successfully.
+   </div>   	      
+   <div *ngIf="statusCode === 204" [ngClass] = "'success'">
+        Article deleted successfully.
+   </div>   	   
+   <div *ngIf="statusCode === 500" [ngClass] = "'error'">
+        Internal Server Error.
+   </div>   	
+ </div>
+ <ng-template #processing>
+	<img *ngIf="requestProcessing" src="assets/images/loading.gif">
+ </ng-template>
+</div>
+<h3>TABLA MERCADERIAS</h3>
+<table>
+  <tr><th> Id</th> <th>Title</th><th>Category</th><th></th><th></th></tr>
+  <tr *ngFor="let mercaderia of allMercaderia" >
+    <td>{{mercaderia.mercaderiaId}}</td> <td>{{mercaderia.nombre}}</td> <td>{{mercaderia.categoria}}</td>
+	<td><button type="button" (click)="loadMercaderiaToEdit(mercaderia.mercaderiaId)">Edit</button> </td> 
+  </tr>
+</table>
